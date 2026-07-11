@@ -3,6 +3,7 @@ import { Button } from 'src/ui/button';
 import { Select } from 'src/ui/select';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
+import { Text } from 'src/ui/text';
 import { useState, useEffect, useRef, FormEvent } from 'react';
 import clsx from 'clsx';
 
@@ -23,12 +24,12 @@ type ArticleParamsFormProps = {
 };
 
 export const ArticleParamsForm = ({ onApply }: ArticleParamsFormProps) => {
-	const [isOpen, setIsOpen] = useState(false);
-	const asideRef = useRef<HTMLElement>(null);
+	const [isArticleParamsFormOpen, setIsArticleParamsFormOpen] = useState(false);
+	const sidebarRef = useRef<HTMLElement>(null);
 	const [formState, setFormState] = useState(defaultArticleState);
 
 	const handleArrowButtonClick = () => {
-		setIsOpen(!isOpen);
+		setIsArticleParamsFormOpen(!isArticleParamsFormOpen);
 	};
 
 	const handleChange = (
@@ -53,16 +54,16 @@ export const ArticleParamsForm = ({ onApply }: ArticleParamsFormProps) => {
 	};
 
 	useEffect(() => {
-		if (!isOpen) {
+		if (!isArticleParamsFormOpen) {
 			return;
 		}
 
 		const handleOutsideClick = (event: MouseEvent) => {
 			if (
-				asideRef.current &&
-				!asideRef.current.contains(event.target as Node)
+				sidebarRef.current &&
+				!sidebarRef.current.contains(event.target as Node)
 			) {
-				setIsOpen(false);
+				setIsArticleParamsFormOpen(false);
 			}
 		};
 
@@ -71,20 +72,27 @@ export const ArticleParamsForm = ({ onApply }: ArticleParamsFormProps) => {
 		return () => {
 			document.removeEventListener('mousedown', handleOutsideClick);
 		};
-	}, [isOpen]);
+	}, [isArticleParamsFormOpen]);
 
 	return (
 		<>
-			<ArrowButton isOpen={isOpen} onClick={handleArrowButtonClick} />
+			<ArrowButton
+				isOpen={isArticleParamsFormOpen}
+				onClick={handleArrowButtonClick}
+			/>
 			<aside
-				ref={asideRef}
-				className={clsx(styles.container, isOpen && styles.container_open)}>
+				ref={sidebarRef}
+				className={clsx(
+					styles.container,
+					isArticleParamsFormOpen && styles.container_open
+				)}>
 				<form
 					className={styles.form}
 					onSubmit={handleSubmit}
 					onReset={handleReset}>
-					<h2 className={styles.title}>Задайте параметры</h2>
-
+					<Text as='h2' size={31} weight={800} uppercase>
+						Задайте параметры
+					</Text>
 					<Select
 						title='Шрифт'
 						selected={formState.fontFamilyOption}
